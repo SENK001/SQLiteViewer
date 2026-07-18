@@ -6,7 +6,7 @@
 
     <groupId>com.senk</groupId>
     <artifactId>SQLiteViewer</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <name>SQLiteViewer</name>
 
     <properties>
@@ -50,6 +50,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

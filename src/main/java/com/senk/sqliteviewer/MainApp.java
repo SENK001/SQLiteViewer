@@ -75,10 +75,25 @@ public class MainApp extends Application {
     private MultiSelectComboBox<String> formColumnsMultiSelect;
     private VBox formConditionsBox;
     private TextField formLimitField;
-    private Button formExecuteBtn, formClearBtn, formShowSqlBtn;
+    private Button formExecuteBtn, formClearBtn, formShowSqlBtn, formAddConditionBtn;
     private Tooltip tipFormExecute, tipFormClear, tipFormShowSql;
     private Label formTableLabel, formColumnsLabel, formConditionsLabel;
     private List<String> lastColumnNames;
+
+    private static final String APP_VERSION = loadAppVersion();
+
+    private static String loadAppVersion() {
+        try (var is = MainApp.class.getResourceAsStream(
+                "/com/senk/sqliteviewer/version.properties")) {
+            if (is != null) {
+                var props = new java.util.Properties();
+                props.load(is);
+                return props.getProperty("app.version", "1.0-SNAPSHOT");
+            }
+        } catch (Exception ignored) {
+        }
+        return "1.0-SNAPSHOT";
+    }
 
     @Override
     public void start(Stage stage) {
@@ -132,6 +147,7 @@ public class MainApp extends Application {
         formConditionsLabel.setText(I18n.get("form.conditions"));
         formColumnsMultiSelect.setPromptText(I18n.get("form.columns.all"));
         formLimitField.setPromptText("LIMIT");
+        formAddConditionBtn.setText(I18n.get("form.addCondition"));
         tipFormExecute.setText(I18n.get("form.execute.tip"));
         tipFormClear.setText(I18n.get("form.clear.tip"));
         tipFormShowSql.setText(I18n.get("form.showSql.tip"));
@@ -879,7 +895,7 @@ public class MainApp extends Application {
         alert.setTitle(I18n.get("menu.about.title"));
         alert.setHeaderText("SQLite Viewer");
 
-        Label descLabel = new Label(I18n.get("menu.about.content"));
+        Label descLabel = new Label(I18n.get("menu.about.content", APP_VERSION));
         descLabel.setWrapText(true);
 
         Hyperlink githubLink = new Hyperlink("SENK001");
@@ -943,11 +959,11 @@ public class MainApp extends Application {
 
         addConditionRow();
 
-        Button addConditionBtn = new Button(I18n.get("form.addCondition"));
-        addConditionBtn.setGraphic(createIcon(FontAwesomeSolid.PLUS, 10));
-        addConditionBtn.setOnAction(e -> addConditionRow());
+        formAddConditionBtn = new Button(I18n.get("form.addCondition"));
+        formAddConditionBtn.setGraphic(createIcon(FontAwesomeSolid.PLUS, 10));
+        formAddConditionBtn.setOnAction(e -> addConditionRow());
 
-        HBox conditionsHeader = new HBox(8, formConditionsLabel, addConditionBtn);
+        HBox conditionsHeader = new HBox(8, formConditionsLabel, formAddConditionBtn);
         conditionsHeader.setAlignment(Pos.CENTER_LEFT);
 
         VBox conditionsSection = new VBox(4, conditionsHeader, formConditionsBox);
