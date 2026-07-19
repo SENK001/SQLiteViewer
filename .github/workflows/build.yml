@@ -22,6 +22,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Make mvnw executable
+        run: chmod +x mvnw
+        if: runner.os != 'Windows'
+
       - name: Build
         run: ./mvnw package --batch-mode
 
