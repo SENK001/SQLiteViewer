@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  windows-installer:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build Windows installers
+        run: ./mvnw verify -Ppackage-exe --batch-mode
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: SQLiteViewer-Windows-Installers
+          path: target/dist/*.exe
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: target/dist/*.exe
